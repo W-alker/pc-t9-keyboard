@@ -1,0 +1,40 @@
+[package]
+name = "pc-t9-keyboard"
+version = "0.1.0"
+description = "Windows 桌面悬浮九键输入面板 — 数字转拼音，交给系统 IME"
+authors = ["you"]
+edition = "2021"
+rust-version = "1.77"
+
+# The library that main.rs (and mobile entry points) call into.
+[lib]
+name = "pc_t9_keyboard_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+# `macos-private-api` is required because the window is transparent
+# (tauri.conf.json -> app.macOSPrivateApi = true).
+tauri = { version = "2", features = ["macos-private-api"] }
+tauri-plugin-global-shortcut = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+# Cross-platform synthetic input (used for editing keys everywhere, and for
+# letters on non-Windows so the UI can be developed on macOS/Linux).
+enigo = "0.3"
+# Native Acrylic (Windows) / Vibrancy (macOS) behind the transparent webview.
+window-vibrancy = "0.5"
+
+# Windows-only: scancode SendInput (IME-safe letter typing) + WS_EX_NOACTIVATE.
+[target.'cfg(windows)'.dependencies]
+windows = { version = "0.58", features = [
+  "Win32_Foundation",
+  "Win32_UI_Input_KeyboardAndMouse",
+  "Win32_UI_WindowsAndMessaging",
+] }
+
+[features]
+# Enables Tauri's custom-protocol for production builds.
+custom-protocol = ["tauri/custom-protocol"]
