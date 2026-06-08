@@ -61,6 +61,8 @@ export function useEdgeSnap() {
 
     const collapse = async () => {
       if (!edge || collapsed) return;
+      // Mini 球只有 56px，再贴边藏到 6px 就基本看不见了，跳过。
+      if (useUIStore.getState().isMini) return;
       const mon = await currentMonitor();
       if (!mon) return;
       const pos = await win.outerPosition();

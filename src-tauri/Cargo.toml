@@ -35,6 +35,24 @@ windows = { version = "0.58", features = [
   "Win32_UI_WindowsAndMessaging",
 ] }
 
+# macOS-only.
+# - tauri-nspanel: convert the main window into an NSPanel with the
+#   nonactivating style mask so clicking it doesn't steal focus from the
+#   target text field — the Mac equivalent of Windows' WS_EX_NOACTIVATE.
+# - core-graphics: send "raw" CGEvent keyboard events directly (no enigo
+#   `EVENT_MARKER` field, no non-standard flags). Chinese IMEs filter out
+#   enigo's marked synthetic events, so we go straight to the AppKit API.
+[target.'cfg(target_os = "macos")'.dependencies]
+tauri-nspanel = { git = "https://github.com/ahkohd/tauri-nspanel", branch = "v2" }
+core-graphics = "0.25"
+# RunLoop wrapping for the global CGEventTap (listen-only) that detects
+# physical Space/Enter/Escape so the frontend can resync after the IME
+# commits/cancels without going through our panel buttons.
+core-foundation = "0.10"
+# objc runtime — used to patch tauri-nspanel's RawNSPanel canBecomeKeyWindow → NO
+# so the panel never grabs key focus (we need the underlying text app to keep it).
+objc = "0.2"
+
 [features]
 # Enables Tauri's custom-protocol for production builds.
 custom-protocol = ["tauri/custom-protocol"]
