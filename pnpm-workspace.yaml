@@ -1,0 +1,5 @@
+# pnpm 10.10+ 把 `pnpm.*` 类设置从 package.json 移到了这里
+# （即便不是真的 monorepo workspace 也用这个文件）。
+# 见：https://pnpm.io/settings
+onlyBuiltDependencies:
+  - esbuild
