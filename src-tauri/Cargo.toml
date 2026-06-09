@@ -28,8 +28,11 @@ enigo = "0.3"
 window-vibrancy = "0.5"
 
 # Windows-only: scancode SendInput (IME-safe letter typing) + WS_EX_NOACTIVATE.
+# 版本要与 Tauri 2.11 内部使用的 windows-core 对齐（当前 0.61），
+# 否则我们这边的 HWND 和 window.hwnd() 返回的 HWND 是两个不同 crate 的同名类型，
+# 调 GetWindowLongPtrW 之类会报 trait bound 不满足。
 [target.'cfg(windows)'.dependencies]
-windows = { version = "0.58", features = [
+windows = { version = "0.61", features = [
   "Win32_Foundation",
   "Win32_UI_Input_KeyboardAndMouse",
   "Win32_UI_WindowsAndMessaging",
