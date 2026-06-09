@@ -2370,7 +2370,7 @@ dependencies = [
  "tauri-nspanel",
  "tauri-plugin-global-shortcut",
  "window-vibrancy 0.5.3",
- "windows 0.58.0",
+ "windows 0.61.3",
 ]
 
 [[package]]

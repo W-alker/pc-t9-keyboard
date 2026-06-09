@@ -13,15 +13,11 @@ pub fn setup_window(window: &WebviewWindow) {
     apply_nspanel(window);
 }
 
-/// 在透明 webview 背后应用原生材质：Windows = Acrylic，macOS = Vibrancy。
+/// 平台原生材质。
+/// - macOS 保留 vibrancy（自带 16px 圆角抗锯齿，效果好）。
+/// - Windows 走「简洁现代」路线：不再上 Acrylic，CSS 那边把面板做成近似不透明的
+///   深色 → 没有矩形 Acrylic 在 CSS 圆角四周露出灰色的问题，也不再需要 SetWindowRgn。
 fn apply_effects(window: &WebviewWindow) {
-    #[cfg(target_os = "windows")]
-    {
-        use window_vibrancy::apply_acrylic;
-        // 半透明深色 Acrylic（rgba）。
-        let _ = apply_acrylic(window, Some((18, 18, 28, 125)));
-    }
-
     #[cfg(target_os = "macos")]
     {
         use window_vibrancy::{apply_vibrancy, NSVisualEffectMaterial, NSVisualEffectState};
@@ -32,8 +28,6 @@ fn apply_effects(window: &WebviewWindow) {
             Some(16.0),
         );
     }
-
-    // 其它平台不做处理（CSS 的半透明 + backdrop-filter 仍然生效）。
     let _ = window;
 }
 
